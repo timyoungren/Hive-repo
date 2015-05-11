@@ -1,0 +1,23 @@
+create external table muni_caseload_TY (Offense_Case_Type string, Offense_Date string, Offense_Time string, 
+                                     Offense_Charge_Description string, Offense_Street_Name string, Offense_Cross_Street_Check string, 
+                                     Offense_Cross_Street string, School_Zone string, Construction_Zone string, Case_Closed string)
+                                     ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' 
+                                     STORED AS TEXTFILE LOCATION '/user/timyoungren/data/';
+
+LOAD DATA INPATH '/user/timyoungren/data/Municipal_Court_Caseload_Information.csv' INTO TABLE muni_caseload_TY
+
+select * as MUNI_case_count from muni_caseload
+where offense_case_type='Offense Case Type';
+
+select count (*) from muni_caseload_TY where offense_case_type = 'Offense Case Type';
+
+create table MuniCaseload_TY as select * from muni_caseload_TY
+where offense_case_type <> 'Offense Case Type';
+
+select * from MuniCaseload_TY where offense_case_type = 'Offense Case Type';
+
+select count (*) from MuniCaseload_TY where offense_case_type = 'Offense Case Type';
+
+select offense_case_type, count (*) as frequency from MuniCaseload_TY group by offense_case_type sort by frequency desc;
+
+select offense_charge_type, count (*) as frequency from MuniCaseload_TY group by offense_charge_type sort by frequency desc;
